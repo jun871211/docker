@@ -1,3 +1,3 @@
-4/11 Docker practice
-4/13 Docker compose
-4/15 MLflow
+4/11 Docker practice <br>
+4/13 Docker compose <br>
+4/15 MLflow <br>
