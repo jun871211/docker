@@ -1,3 +1,46 @@
+# docker compose 로 jupyter notebook 실행할 수 있는 환경을 만들기
+
+# Dockerfile
+FROM python:3.9
+LABEL maintainer="xxx@gmai.com"
+LABEL version="1.0.0"
+LABEL description="A test docker image to understand Docker"
+
+RUN apt-get update
+RUN apt-get upgrade -y
+
+RUN apt-get clean && apt-get autoremove -y
+RUN apt-get install -y python3-pip
+
+RUN pip install jupyter
+
+WORKDIR /data/app/app-jupyter
+# ADD requirements.tx /data/app
+
+# RUN pip install -r /data/app/requirements.txt
+
+ENTRYPOINT ["jupyter", "notebook"]
+CMD ["--ip", "0.0.0.0", "--port", "8888", "--allow-root", "--NotebookApp.token='12345'"]
+
+
+# docker-compose.yml
+version: '3'
+services:
+  env-jupyter:
+    image: jupyter-docker-test
+    build: .
+    container_name: env-jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/data/app/app-jupyter
+      
+      
+-----------------------------------------------------------------------------------------
+
+# MySQL 환경 만들기
+
+# docker-compose.yml
 version: "3"
 
 services:
@@ -9,6 +52,38 @@ services:
       MYSQL_DATABASE: my-service
       MYSQL_USER: test-user
       MYSQL_PASSWORD: 12345!
-      MYSQL_ROOT_PASSWORD: 12345!
+			MYSQL_ROOT_PASSWORD: 12345!
+
 volumes:
   db_volume:
+  
+  
+  
+# .env 파일
+MYSQL_DATABASE=ml-service
+MYSQL_USER=test-user
+MYSQL_PASSWORD=12345!
+MYSQL_ROOT_PASSWORD=12345!
+  
+  
+  
+  
+----------------------------------------------------------------------------------------
+
+# MongoDB 환경 만들고 CRUD 하기
+
+# docker-compose.yml
+version: '3.8'
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongodb:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=1234 
+      - MONGO_INITDB_DATABASE=mydb
